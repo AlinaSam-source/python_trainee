@@ -2,15 +2,12 @@ from selenium.webdriver.support.ui import Select
 
 class ContactHelper:
     def __init__(self, app):
+        self.accept_next_alert = True
         self.app = app
-
-    def go_to_contacts_page(self):
-        wd = self.app.wd
-        # go to contacts page
-        wd.find_element_by_link_text("home page").click()
 
     def create(self, contact):
         wd = self.app.wd
+        app = self.app
         # init new contact
         wd.find_element_by_link_text("add new").click()
         # fill contact form
@@ -87,4 +84,31 @@ class ContactHelper:
         wd.find_element_by_id("content").click()
         # submit contact creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
-        self.go_to_contacts_page()
+        app.pages.open_page(page_name="home page")
+
+    def delete(self):
+        wd = self.app.wd
+        app = self.app
+        app.pages.open_page(page_name="home")
+        #select the first contact
+        wd.find_element_by_name("selected[]").click()
+        # delete the first contact
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        app.confirmations.assertRegexpMatches(app.confirmations.close_alert_and_get_its_text(), r"^Delete 1 addresses[\s\S]$")
+        #go to contacts page
+        app.pages.open_page(page_name="home")
+
+    def edit_contact(self, contact):
+        wd = self.app.wd
+        app = self.app
+        app.pages.open_page(page_name="home")
+        # select the first contact
+        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+        # edit the name of the first contact
+        wd.find_element_by_name(contact.field).clear()
+        wd.find_element_by_name(contact.field).send_keys(contact.name)
+        # confirm the change
+        wd.find_element_by_name("update").click()
+        # go to contacts page
+        app.pages.open_page(page_name="home page")
+
