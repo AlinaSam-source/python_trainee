@@ -83,3 +83,10 @@ class ContactHelper:
         # go to contacts page
         app.pages.open_page(page_name="home page")
 
+
+    def count(self):
+        wd = self.app.wd
+        app = self.app
+        app.pages.open_page(page_name="home")
+        return len(wd.find_elements_by_name("selected[]"))
+

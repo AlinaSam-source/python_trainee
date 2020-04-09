@@ -56,3 +56,9 @@ class GroupHelper:
         # confirm the change
         wd.find_element_by_name("update").click()
         app.pages.open_page(page_name="group page")
+
+    def count(self):
+        wd = self.app.wd
+        app = self.app
+        app.pages.open_page(page_name="groups")
+        return len(wd.find_elements_by_name("selected[]"))
