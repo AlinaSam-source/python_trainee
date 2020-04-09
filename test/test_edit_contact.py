@@ -1,7 +1,8 @@
-from model.edit import Edit
+from model.contact import Contact
 
-def test_edit_contact (app):
-    app.pages.open_home_page()
-    app.session.login(username="admin", password="secret")
-    app.contact.edit_contact(Edit(field="middlename", name="Alina"))
-    app.session.logout()
+def test_edit_contact_firstName (app):
+    app.contact.edit_contact(Contact(firstName="Sveta"))
+
+
+def test_edit_contact_middleName (app):
+    app.contact.edit_contact(Contact(middlename="Sveta"))

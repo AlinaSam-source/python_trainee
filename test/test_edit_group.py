@@ -1,7 +1,8 @@
-from model.edit import Edit
+from model.group import Group
 
-def test_edit_group(app):
-    app.pages.open_home_page()
-    app.session.login(username="admin", password="secret")
-    app.group.edit_group(Edit(field="group_name", name="Group"))
-    app.session.logout()
+def test_edit_group_name(app):
+    app.group.edit_group(Group(name='Alina'))
+
+
+def test_edit_group_header(app):
+    app.group.edit_group(Group(header='Alina'))
