@@ -1,4 +1,5 @@
 from selenium.webdriver.support.ui import Select
+from model.contact import Contact
 
 class ContactHelper:
     def __init__(self, app):
@@ -19,12 +20,8 @@ class ContactHelper:
 
     def create(self, contact):
         wd = self.app.wd
-        app = self.app
-        # init new contact
         wd.find_element_by_link_text("add new").click()
-        # fill contact form
         self.fill_contact_form(contact)
-        # submit contact creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         self.return_to_contacts_page()
 
@@ -63,41 +60,69 @@ class ContactHelper:
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
 
+
     def select_field_value(self, field_name, text):
         wd = self.app.wd
         if text is not None:
             Select(wd.find_element_by_name(field_name)).select_by_visible_text(text)
 
+
     def delete(self):
         wd = self.app.wd
         app = self.app
         self.go_to_contacts_page()
-        #select the first contact
-        wd.find_element_by_name("selected[]").click()
-        # delete the first contact
+
+        element_to_delete = self.select_the_first_contact()
+        contact_to_delete = self.resolve_contact(element_to_delete)
+        element_to_delete.find_element_by_name("selected[]").click()
+
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         app.confirmations.assertRegexpMatches(app.confirmations.close_alert_and_get_its_text(), r"^Delete 1 addresses[\s\S]$")
-        #go to contacts page
+
         self.go_to_contacts_page()
+        return contact_to_delete
+
+
+    def select_the_first_contact(self):
+        wd = self.app.wd
+        return wd.find_elements_by_css_selector('#maintable tr:not(:first-child)')[0]
+
+
+    def click_edit_the_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_elements_by_css_selector("a[href='edit.php?id=%s']" % id)[0].click()
 
 
     def edit_contact(self, contact):
         wd = self.app.wd
-        app = self.app
         self.go_to_contacts_page()
-        # select the first contact
-        wd.find_element_by_xpath("//img[@alt='Edit']").click()
-        # edit the name of the first contact
+
+        self.click_edit_the_contact_by_id(contact.id)
+
         self.fill_contact_form(contact)
-        # confirm the change
         wd.find_element_by_name("update").click()
-        # go to contacts page
+
         self.return_to_contacts_page()
 
 
     def count(self):
         wd = self.app.wd
-        app = self.app
         self.go_to_contacts_page()
         return len(wd.find_elements_by_name("selected[]"))
+
+
+    def get_contact_list(self):
+        wd = self.app.wd
+        self.go_to_contacts_page()
+        contact =[]
+        for element in wd.find_elements_by_css_selector('#maintable tr:not(:first-child)'):
+            contact.append(self.resolve_contact(element))
+        return contact
+
+
+    def resolve_contact(self, element):
+        text_name = element.find_elements_by_css_selector('td:nth-child(3)')[0].text
+        text_surname = element.find_elements_by_css_selector('td:nth-child(2)')[0].text
+        id = element.find_element_by_name("selected[]").get_attribute("value")
+        return Contact(firstName=text_name, lastname=text_surname, id=id)
 

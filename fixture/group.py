@@ -1,3 +1,5 @@
+from model.group import Group
+
 class GroupHelper:
     def __init__(self, app):
         self.app = app
@@ -8,21 +10,21 @@ class GroupHelper:
             wd.find_element_by_link_text("groups").click()
 
 
-    def return_groups_list(self):
+    def return_to_groups_page(self):
         wd = self.app.wd
         if not (wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name("new")) > 0):
-            wd.find_element_by_link_text("groups").click()
+            wd.find_element_by_link_text("group page").click()
 
 
     def create(self, group):
         wd = self.app.wd
         self.open_groups_page()
-        # group creation
+
         wd.find_element_by_name("new").click()
         self.fill_group_data(group)
-        # submit group creation
         wd.find_element_by_name("submit").click()
-        self.return_groups_list()
+
+        self.return_to_groups_page()
 
 
     def fill_group_data(self, group):
@@ -34,41 +36,65 @@ class GroupHelper:
     def change_field_value(self, field_name, text):
         wd = self.app.wd
         if text is not None:
-            wd.find_element_by_name(field_name).click()
-            wd.find_element_by_name(field_name).clear()
-            wd.find_element_by_name(field_name).send_keys(text)
-
+            element = wd.find_element_by_name(field_name)
+            element.click()
+            element.clear()
+            element.send_keys(text)
 
     def delete(self):
         wd = self.app.wd
-        app = self.app
         self.open_groups_page()
-        self.select_the_first_group()
-        # delete the first group
+
+        element_to_delete = self.select_the_first_group()
+        group_to_delete = self.resolve_group(element_to_delete)
+        element_to_delete.find_element_by_name('selected[]').click()
         wd.find_element_by_name("delete").click()
-        self.return_groups_list()
+
+        self.return_to_groups_page()
+        return group_to_delete
 
 
     def select_the_first_group(self):
-        # select the first group
         wd = self.app.wd
-        wd.find_element_by_name("selected[]").click()
+        return wd.find_elements_by_css_selector("span.group")[0]
+
+
+    def select_the_group_by_id(self, id):
+        wd = self.app.wd
+        return wd.find_elements_by_css_selector('span.group input[value="%s"]' % id)[0]
 
 
     def edit_group(self, group_data):
         wd = self.app.wd
-        app = self.app
         self.open_groups_page()
-        self.select_the_first_group()
-        # edit the name of the first group
+
+        element_to_edit = self.select_the_group_by_id(group_data.id)
+        element_to_edit.click()
         wd.find_element_by_xpath("//input[@name='edit']").click()
         self.fill_group_data(group_data)
-        # confirm the change
         wd.find_element_by_name("update").click()
-        self.return_groups_list()
+
+        self.return_to_groups_page()
+
 
     def count(self):
         wd = self.app.wd
-        app = self.app
         self.open_groups_page()
         return len(wd.find_elements_by_name("selected[]"))
+
+
+    def get_group_list(self):
+        wd = self.app.wd
+        self.open_groups_page()
+
+        groups =[]
+        for element in wd.find_elements_by_css_selector("span.group"):
+            groups.append(self.resolve_group(element))
+        return groups
+
+
+    def resolve_group(self, element):
+        text = element.text
+        id = element.find_element_by_name("selected[]").get_attribute("value")
+        return Group(name=text, id=id)
+
