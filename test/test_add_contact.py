@@ -8,7 +8,7 @@ def test_add_new_contact(app):
                                ayear="1996", address2="1", phone2="1", notes="1")
     app.contact.create(contact)
     new_contacts = app.contact.get_contact_list()
-    assert len(old_contacts) + 1 == len(new_contacts)
+    assert len(old_contacts) + 1 == app.contact.count()
     old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 

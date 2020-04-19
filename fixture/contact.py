@@ -24,6 +24,7 @@ class ContactHelper:
         self.fill_contact_form(contact)
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         self.return_to_contacts_page()
+        self.contact_cache = None
 
 
     def fill_contact_form(self, contact):
@@ -80,6 +81,7 @@ class ContactHelper:
         app.confirmations.assertRegexpMatches(app.confirmations.close_alert_and_get_its_text(), r"^Delete 1 addresses[\s\S]$")
 
         self.go_to_contacts_page()
+        self.contact_cache = None
         return contact_to_delete
 
 
@@ -103,6 +105,7 @@ class ContactHelper:
         wd.find_element_by_name("update").click()
 
         self.return_to_contacts_page()
+        self.contact_cache = None
 
 
     def count(self):
@@ -111,13 +114,18 @@ class ContactHelper:
         return len(wd.find_elements_by_name("selected[]"))
 
 
+    contact_cache = None
+
     def get_contact_list(self):
-        wd = self.app.wd
-        self.go_to_contacts_page()
-        contact =[]
-        for element in wd.find_elements_by_css_selector('#maintable tr:not(:first-child)'):
-            contact.append(self.resolve_contact(element))
-        return contact
+        if self.contact_cache is None:
+           wd = self.app.wd
+           self.go_to_contacts_page()
+
+           self.contact_cache = []
+           for element in wd.find_elements_by_css_selector('#maintable tr:not(:first-child)'):
+               self.contact_cache.append(self.resolve_contact(element))
+
+        return list(self.contact_cache)
 
 
     def resolve_contact(self, element):
