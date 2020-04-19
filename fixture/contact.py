@@ -68,12 +68,12 @@ class ContactHelper:
             Select(wd.find_element_by_name(field_name)).select_by_visible_text(text)
 
 
-    def delete(self):
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         app = self.app
         self.go_to_contacts_page()
 
-        element_to_delete = self.select_the_first_contact()
+        element_to_delete = self.select_contact_by_index(index)
         contact_to_delete = self.resolve_contact(element_to_delete)
         element_to_delete.find_element_by_name("selected[]").click()
 
@@ -90,12 +90,17 @@ class ContactHelper:
         return wd.find_elements_by_css_selector('#maintable tr:not(:first-child)')[0]
 
 
+    def select_contact_by_index(self, index):
+        wd = self.app.wd
+        return wd.find_elements_by_css_selector('#maintable tr:not(:first-child)')[index]
+
+
     def click_edit_the_contact_by_id(self, id):
         wd = self.app.wd
         wd.find_elements_by_css_selector("a[href='edit.php?id=%s']" % id)[0].click()
 
 
-    def edit_contact(self, contact):
+    def edit_contact_by_id(self, contact):
         wd = self.app.wd
         self.go_to_contacts_page()
 

@@ -43,11 +43,11 @@ class GroupHelper:
             element.send_keys(text)
 
 
-    def delete(self):
+    def delete_group_by_index(self, index):
         wd = self.app.wd
         self.open_groups_page()
 
-        element_to_delete = self.select_the_first_group()
+        element_to_delete = self.select_the_group_by_index(index)
         group_to_delete = self.resolve_group(element_to_delete)
         element_to_delete.find_element_by_name('selected[]').click()
         wd.find_element_by_name("delete").click()
@@ -57,10 +57,14 @@ class GroupHelper:
         return group_to_delete
 
 
-
     def select_the_first_group(self):
         wd = self.app.wd
         return wd.find_elements_by_css_selector("span.group")[0]
+
+
+    def select_the_group_by_index(self, index):
+        wd = self.app.wd
+        return wd.find_elements_by_css_selector('span.group')[index]
 
 
     def select_the_group_by_id(self, id):
@@ -68,7 +72,7 @@ class GroupHelper:
         return wd.find_elements_by_css_selector('span.group input[value="%s"]' % id)[0]
 
 
-    def edit_group(self, group_data):
+    def edit_group_by_id(self, group_data):
         wd = self.app.wd
         self.open_groups_page()
 
