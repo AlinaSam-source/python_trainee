@@ -15,9 +15,9 @@ def test_edit_contact_firstName (app):
     expected_edited_contact = Contact(id=old_id, firstName=new_firstname)
     app.contact.edit_contact_by_id(expected_edited_contact)
 
-    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) == app.contact.count()
 
-    assert len(old_contacts) == len(new_contacts)
+    new_contacts = app.contact.get_contact_list()
 
     assert sorted(new_contacts, key=Contact.id_or_max)[index].firstName == new_firstname
 
@@ -36,9 +36,9 @@ def test_edit_contact_lastname(app):
     expected_edited_contact = Contact(id=old_id, lastname=new_lastname)
     app.contact.edit_contact_by_id(expected_edited_contact)
 
-    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) == app.contact.count()
 
-    assert len(old_contacts) == len(new_contacts)
+    new_contacts = app.contact.get_contact_list()
 
     assert sorted(new_contacts, key=Contact.id_or_max)[index].id == old_id
     assert sorted(new_contacts, key=Contact.id_or_max)[index].lastname == new_lastname
