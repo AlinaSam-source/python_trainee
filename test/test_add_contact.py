@@ -33,7 +33,7 @@ testdata = [Contact(firstName=random_string("firstName", 10), middlename=random_
                     byear=random_year(), amonth=random_month(), aday=random_days(),
                     ayear=random_year(), address2=random_string("address2", 10), phone2=random_string("phone2", 10),
                     notes=random_string("notes", 10)
-) for i in range(10)]
+) for i in range(5)]
 
 
 
