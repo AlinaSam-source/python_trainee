@@ -3,9 +3,9 @@ import json
 import os.path
 from fixture.application import Application
 
-
 fixture = None
 target = None
+
 
 @pytest.fixture
 def app(request):
@@ -22,13 +22,16 @@ def app(request):
     fixture.session.ensure_login(username=target['username'], password=target['password'])
     return fixture
 
-@pytest.fixture(scope="session", autouse = True)
+
+@pytest.fixture(scope="session", autouse=True)
 def stop(request):
     def fin():
         fixture.session.ensure_logout()
         fixture.destroy()
+
     request.addfinalizer(fin)
     return fixture
+
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action='store', default='firefox')

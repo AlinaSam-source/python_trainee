@@ -24,7 +24,6 @@ class Application:
         self.confirmations = ConfirmationHelper(self)
         self.baseURL = baseURL
 
-
     def is_valid(self):
         try:
             self.wd.current_url

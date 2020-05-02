@@ -17,4 +17,3 @@ def test_delete_contact(app):
 
     contact_actually_deleted = list(set(old_contacts) - set(new_contacts))[0]
     assert contact_expected_deleted == contact_actually_deleted
-
