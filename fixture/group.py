@@ -107,7 +107,7 @@ class GroupHelper:
 
 
     def resolve_group(self, element):
-        text = element.text
+        text = element.get_attribute("textContent")
         id = element.find_element_by_name("selected[]").get_attribute("value")
         return Group(name=text, id=id)
 
