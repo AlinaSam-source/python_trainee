@@ -34,7 +34,7 @@ class Contact:
 
 
     def __repr__(self):
-        return "%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s" % (self.firstName, self.middlename, self.lastname, self.nickname, self.title, self.company, self.address, self.home, self.mobile, self.work , self.fax, self.email, self.email2, self.email3, self.homepage, self.bday, self.bmonth, self.byear, self.aday, self.amonth, self.ayear, self.phone2, self.address2, self.notes)
+        return "%s:%s:%s" % (self.firstName, self.middlename, self.lastname)
 
 
 
