@@ -1,5 +1,5 @@
 from model.group import Group
-
+from random import randrange
 
 class GroupHelper:
     def __init__(self, app):
@@ -52,21 +52,6 @@ class GroupHelper:
         self.group_cache = None
         return group_to_delete
 
-
-    def delete_group_by_index(self, index):
-        wd = self.app.wd
-        self.open_groups_page()
-
-        element_to_delete = self.select_the_group_by_index(index)
-        group_to_delete = self.resolve_group(element_to_delete)
-        element_to_delete.find_element_by_name('selected[]').click()
-        wd.find_element_by_name("delete").click()
-
-        self.return_to_groups_page()
-        self.group_cache = None
-        return group_to_delete
-
-
     def select_the_first_group(self):
         wd = self.app.wd
         return wd.find_elements_by_css_selector("span.group")[0]
@@ -114,3 +99,5 @@ class GroupHelper:
         text = element.get_attribute("textContent")
         id = element.find_element_by_name("selected[]").get_attribute("value")
         return Group(name=text, id=id)
+
+

@@ -97,6 +97,11 @@ class ContactHelper:
         return wd.find_elements_by_css_selector('#maintable tr:not(:first-child)')[index]
 
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        return wd.find_elements_by_css_selector('#maintable tr:not(:first-child)')[id]
+
+
     def open_contact_to_edit_by_index(self, index):
         self.app.open_home_page()
         self.go_to_contacts_page()
@@ -195,3 +200,41 @@ class ContactHelper:
         phone2 = re.search("P:(.*)", text).group(1)
 
         return Contact(home=home, mobile=mobile, work=work, phone2=phone2)
+
+
+    def select_group_add_contact_to(self, id):
+        wd = self.app.wd
+        wd.find_element_by_name("to_group")
+        wd.find_element_by_xpath("(//option[@value='%s'])[2]" % id).click()
+
+
+    def select_group_delete_contact_from(self, id):
+        wd = self.app.wd
+        wd.find_element_by_name("group")
+        wd.find_element_by_xpath('//option[@value="%s"]' % id).click()
+
+
+    def add_contact_to_group(self, contact_id, group_id ):
+        wd = self.app.wd
+        self.go_to_contacts_page()
+        wd.find_elements_by_css_selector('#maintable td:first-child input[value="%s"]' % contact_id)[0].click()
+        self.select_group_add_contact_to(group_id)
+        wd.find_element_by_name("add").click()
+
+
+    def delete_contact_from_group(self, contact_id, group_id ):
+        wd = self.app.wd
+        self.go_to_contacts_page()
+        self.select_group_delete_contact_from(group_id)
+        wd.find_elements_by_css_selector('#maintable td:first-child input[value="%s"]' % contact_id)[0].click()
+        wd.find_element_by_name("remove").click()
+
+
+
+
+
+
+
+
+
+
