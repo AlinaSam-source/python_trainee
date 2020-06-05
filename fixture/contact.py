@@ -231,7 +231,33 @@ class ContactHelper:
 
 
 
+    def get_contact_list_field(self, field):
+        list_ui = []
+        wd = self.app.wd
+        self.go_to_contacts_page()
+        for element in wd.find_elements_by_css_selector('#maintable tr:not(:first-child)'):
+            list_ui.append(self.resolve_contact_field(element, field))
+        return list_ui
 
+
+    def resolve_contact_field(self, element, field):
+        text_name = element.find_elements_by_css_selector('td:nth-child(3)')[0].text
+        text_surname = element.find_elements_by_css_selector('td:nth-child(2)')[0].text
+        text_all_phones = element.find_elements_by_css_selector('td:nth-child(6)')[0].text
+        text_address = element.find_elements_by_css_selector('td:nth-child(4)')[0].text
+        id = element.find_element_by_name("selected[]").get_attribute("value")
+        all_emails_from_home_page = element.find_elements_by_css_selector('td:nth-child(5)')[0].text
+        field_name = field
+        if field_name == 'firstName':
+            return Contact(id=id, firstName=text_name)
+        if field_name == 'lastname':
+            return Contact(id=id, lastname=text_surname)
+        if field_name == 'all_phones_from_home_page':
+            return Contact(id=id, all_phones_from_home_page=text_all_phones)
+        if field_name == 'all_emails_from_home_page':
+            return Contact(id=id, all_emails_from_home_page=all_emails_from_home_page)
+        if field_name == 'address':
+            return Contact(id=id, address=text_address)
 
 
 

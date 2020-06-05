@@ -3,6 +3,7 @@ from model.group import Group
 from fixture.orm import ORMFixure
 from fixture.contact import Contact
 
+
 def test_add_contact_to_group(app, db):
     if len(db.get_contact_list()) == 0:
         app.contact.create(Contact(firstName="test"))
